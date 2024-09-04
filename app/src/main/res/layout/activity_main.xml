@@ -21,19 +21,21 @@
                 android:id="@+id/Textapp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LadyBuddy"
+                android:text="Suraksha"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/saman___"
                 android:textColor="@color/cardview_light_background"
-                android:textSize="22sp" />
+                android:textSize="28sp" />
 
             <TextView
                 android:id="@+id/texttagline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/Textapp"
-                android:layout_marginTop="6dp"
-                android:text="A Sword Of Women"
+                android:layout_marginTop="3dp"
+                android:text="हर कदम सुरक्षित"
                 android:textColor="#52BAFF"
-                android:textSize="14sp" />
+                android:textSize="15sp" />
 
 
         </RelativeLayout>
