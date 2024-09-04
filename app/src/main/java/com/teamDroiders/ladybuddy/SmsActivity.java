@@ -354,32 +354,33 @@ public class SmsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId(); // Get the item ID
 
-        switch (item.getItemId()) {
+        if (id == R.id.action_Detailed_instructions) {
+            // Handle action for Detailed Instructions
+            startActivity(new Intent(getApplicationContext(), SosInsructionsActivity.class));
+            return true;
+        } else if (id == R.id.action_Short_instructions) {
+            // Handle action for Short Instructions
+            AlertDialog.Builder alert = new AlertDialog.Builder(SmsActivity.this);
+            View mView = getLayoutInflater().inflate(R.layout.custom_dialog, null);
 
-            case R.id.action_Detailed_instructions:
-                startActivity( new Intent( getApplicationContext(), SosInsructionsActivity.class ) );
-                return true;
-
-            case R.id.action_Short_instructions:
-                final AlertDialog.Builder alert = new AlertDialog.Builder(SmsActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.custom_dialog,null);
-
-                Button btn_okay = (Button)mView.findViewById(R.id.btn_okay);
-                alert.setView(mView);
-                final AlertDialog alertDialog = alert.create();
-                alertDialog.setCanceledOnTouchOutside(false);
-                btn_okay.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alertDialog.dismiss();
-                    }
-                });
-                alertDialog.show();
-            default:
-                return false;
-
+            Button btn_okay = mView.findViewById(R.id.btn_okay);
+            alert.setView(mView);
+            AlertDialog alertDialog = alert.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            btn_okay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.show();
+            return true;
+        } else {
+            // Handle other menu items or default case
+            return super.onOptionsItemSelected(item);
         }
-
     }
+
 }

@@ -24,10 +24,10 @@ public class AboutUs extends AppCompatActivity {
         });
     }
     public void composeEmail() {
-        String subject="Contacting for LadyBuddy";
-        String mailto = "mailto:moheeeetgupta@gmail.com" +
-                "?cc="+"sakshigupta82401@gmail.com"+
-                "&bcc="+"shivanikumari6109@gmail.com"+
+        String subject="Contacting for WhiteHats";
+        String mailto = "mailto:whitehats3459@gmail.com" +
+                "?cc="+"mradul.kapoor2004@gmail.com"+
+                "&bcc="+"sanyavohra12@gmail.com"+
                 "&subject=" + Uri.encode(subject);
 
 

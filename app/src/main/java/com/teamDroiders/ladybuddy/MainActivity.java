@@ -24,6 +24,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.BuildConfig;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
