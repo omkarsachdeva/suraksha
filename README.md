@@ -26,10 +26,10 @@ SOS Situation Recognition through Gesture Analytics: Detect emergency situations
 Hotspot Identification: Identify locations where incidents are more likely to occur, based on past alerts.
 
 
-Team Members
-Omkar Sachdeva
-Mradul Kapoor
-Sanya Vohra
-Manav Singh Shekhawat
-Samraddhi Singh
-Naman Bhattacharya
+Team Members:
+1)Omkar Sachdeva
+2)Mradul Kapoor
+3)Sanya Vohra
+4)Manav Singh Shekhawat
+5)Samraddhi Singh
+6)Naman Bhattacharya
