@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
-    CardView siren, location, Settings, currentlocation, community, news, aboutUs, shareBtn;
+    CardView siren, location, Settings, currentlocation, community, news, aboutUs, shareBtn , monitoring;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         news = findViewById( R.id.News );
         aboutUs = findViewById( R.id.about_us );
         // community=findViewById (R.id.community);
+        monitoring = findViewById(R.id.monitoring);
         siren.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,6 +152,14 @@ public class MainActivity extends AppCompatActivity {
                 } catch(Exception e) {
                     //e.toString();
                 }
+            }
+        });
+
+        monitoring.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this , MonitoringActivity.class);
+                startActivity(intent);
             }
         });
 

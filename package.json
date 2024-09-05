@@ -1,0 +1,19 @@
+{
+  "name": "suraksha",
+  "version": "1.0.0",
+  "description": "Women Safety Analytics – Protecting Women from Safety Threats\r Problem Statement ID: 1605\r Problem Statement Title: Women Safety Analytics – Protecting Women from Safety Threats",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omkarsachdeva/suraksha.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/omkarsachdeva/suraksha/issues"
+  },
+  "homepage": "https://github.com/omkarsachdeva/suraksha#readme"
+}
