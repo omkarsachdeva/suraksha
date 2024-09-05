@@ -25,17 +25,16 @@
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/saman___"
                 android:textColor="@color/cardview_light_background"
-                android:textSize="28sp" />
+                android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/texttagline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/Textapp"
-                android:layout_marginTop="3dp"
                 android:text="हर कदम सुरक्षित"
-                android:textColor="#841E5E"
-                android:textSize="15sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="22sp" />
 
 
         </RelativeLayout>
