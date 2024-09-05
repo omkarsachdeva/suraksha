@@ -24,6 +24,8 @@ Lone Woman Detection at Night: Identify situations where a lone woman is present
 Detection of Women Surrounded by Men: Recognize instances where a woman is surrounded by a group of men.
 SOS Situation Recognition through Gesture Analytics: Detect emergency situations based on specific gestures.
 Hotspot Identification: Identify locations where incidents are more likely to occur, based on past alerts.
+
+
 Team Members
 Omkar Sachdeva
 Mradul Kapoor
