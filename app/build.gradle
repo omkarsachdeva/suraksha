@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 33
-    namespace 'com.teamDroiders.ladybuddy'
+    namespace 'com.whitehats.suraksha'
 
     defaultConfig {
-        applicationId "com.teamDroiders.ladybuddy"
+        applicationId "com.whitehats.suraksha"
         minSdkVersion 16
         targetSdkVersion 34
         versionCode 6

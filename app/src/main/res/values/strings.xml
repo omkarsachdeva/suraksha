@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">surakhsha</string>
+    <string name="app_name">सुraksha</string>
     <string name="title_activity_saving_activity">saving_activity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -15,5 +15,5 @@
     <string name="choose_buttons">Detect Spy</string>
     <string name="instructions">Instructions</string>
     <string name="settings">Settings</string>
-    <string name="textwarn">Wraning to accept permission</string>
+    <string name="textwarn">Warning to accept permission</string>
 </resources>

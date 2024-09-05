@@ -15,7 +15,7 @@
     android:layout_weight="8"
     android:orientation="vertical"
     >
-    <com.teamDroiders.ladybuddy.SpeedometerView
+    <com.whitehats.suraksha.SpeedometerView
         android:id="@+id/speedometer"
         android:layout_width="match_parent"
         android:layout_height="0dp"

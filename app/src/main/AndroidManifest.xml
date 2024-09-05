@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS"
+        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CALL_PHONE"
+        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -16,85 +19,85 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.teamDroiders.ladybuddy.AboutUs"
+            android:name="com.whitehats.suraksha.AboutUs"
             android:exported="true"
             android:label="AboutUs"
-            android:parentActivityName="com.teamDroiders.ladybuddy.MainActivity"
+            android:parentActivityName="com.whitehats.suraksha.MainActivity"
             android:theme="@style/Theme.New" />
         <activity
-            android:name="com.teamDroiders.ladybuddy.MagBtnInst"
+            android:name="com.whitehats.suraksha.MagBtnInst"
             android:exported="true"
             android:label="Detailed Instructions"
-            android:parentActivityName="com.teamDroiders.ladybuddy.Magnetometer"
+            android:parentActivityName="com.whitehats.suraksha.Magnetometer"
             android:theme="@style/Theme.New"/>
         <activity
-            android:name="com.teamDroiders.ladybuddy.SosInsructionsActivity"
+            android:name="com.whitehats.suraksha.SosInsructionsActivity"
             android:exported="true"
             android:label="SOS Instructions"
-            android:parentActivityName="com.teamDroiders.ladybuddy.SmsActivity"
+            android:parentActivityName="com.whitehats.suraksha.SmsActivity"
             android:theme="@style/Theme.New" />
         <activity
-            android:name="com.teamDroiders.ladybuddy.Magnetometer"
+            android:name="com.whitehats.suraksha.Magnetometer"
             android:exported="true"
             android:label="Spy Camera Dectector"
-            android:parentActivityName="com.teamDroiders.ladybuddy.ChoosenActivity"
-            android:theme="@style/Theme.New" />/>
+            android:parentActivityName="com.whitehats.suraksha.ChoosenActivity"
+            android:theme="@style/Theme.New" />
         <activity
-            android:name="com.teamDroiders.ladybuddy.MagnoInst"
+            android:name="com.whitehats.suraksha.MagnoInst"
             android:exported="true"
             android:label="Manual Detection"
-            android:parentActivityName="com.teamDroiders.ladybuddy.ChoosenActivity"
+            android:parentActivityName="com.whitehats.suraksha.ChoosenActivity"
             android:theme="@style/Theme.New" />
         <activity
-            android:name="com.teamDroiders.ladybuddy.Outside"
+            android:name="com.whitehats.suraksha.Outside"
             android:exported="true"
             android:label="Outside Instructions"
-            android:parentActivityName="com.teamDroiders.ladybuddy.MagnoInst"
+            android:parentActivityName="com.whitehats.suraksha.MagnoInst"
             android:theme="@style/Theme.New"/>
         <activity
-            android:name="com.teamDroiders.ladybuddy.ChangingRoom"
+            android:name="com.whitehats.suraksha.ChangingRoom"
             android:exported="true"
             android:label="ChangingRoom Instructions"
-            android:parentActivityName="com.teamDroiders.ladybuddy.MagnoInst"
+            android:parentActivityName="com.whitehats.suraksha.MagnoInst"
             android:theme="@style/Theme.New"/>
         <activity
-            android:name="com.teamDroiders.ladybuddy.Bedroom"
+            android:name="com.whitehats.suraksha.Bedroom"
             android:exported="true"
             android:label="Bedroom Instructions"
-            android:parentActivityName="com.teamDroiders.ladybuddy.MagnoInst"
+            android:parentActivityName="com.whitehats.suraksha.MagnoInst"
             android:theme="@style/Theme.New"/>
         <activity
-            android:name="com.teamDroiders.ladybuddy.Bathroom"
+            android:name="com.whitehats.suraksha.Bathroom"
             android:exported="true"
             android:label="Bathroom Instructions"
-            android:parentActivityName="com.teamDroiders.ladybuddy.MagnoInst"
+            android:parentActivityName="com.whitehats.suraksha.MagnoInst"
             android:theme="@style/Theme.New"/>
         <activity
-            android:name="com.teamDroiders.ladybuddy.ChoosenActivity"
+            android:name="com.whitehats.suraksha.ChoosenActivity"
             android:exported="true"
             android:label="Detect Hidden Cameras"
-            android:parentActivityName="com.teamDroiders.ladybuddy.MainActivity"
+            android:parentActivityName="com.whitehats.suraksha.MainActivity"
             android:theme="@style/Theme.New" />
         <activity
-            android:name="com.teamDroiders.ladybuddy.NewsActivity"
+            android:name="com.whitehats.suraksha.NewsActivity"
             android:exported="true"
             android:label="Women's News"
-            android:parentActivityName="com.teamDroiders.ladybuddy.MainActivity"
+            android:parentActivityName="com.whitehats.suraksha.MainActivity"
             android:theme="@style/Theme.New" />
         <activity
-            android:name="com.teamDroiders.ladybuddy.Instructions"
+            android:name="com.whitehats.suraksha.Instructions"
             android:label="App Tour"
-            android:parentActivityName="com.teamDroiders.ladybuddy.MainActivity"
+            android:parentActivityName="com.whitehats.suraksha.MainActivity"
             android:theme="@style/Theme.New" />
-        <activity android:name="com.teamDroiders.ladybuddy.webactivity" />
+        <activity android:name="com.whitehats.suraksha.webactivity" />
         <activity
-            android:name="com.teamDroiders.ladybuddy.SmsActivity"
+            android:name="com.whitehats.suraksha.SmsActivity"
             android:label="Emergency Service"
-            android:parentActivityName="com.teamDroiders.ladybuddy.MainActivity"
+            android:parentActivityName="com.whitehats.suraksha.MainActivity"
             android:theme="@style/Theme.New" />
-        <activity android:name="com.teamDroiders.ladybuddy.CurrentLocation" />
-        <activity android:name="com.teamDroiders.ladybuddy.Flashing" />
-        <activity android:name="com.teamDroiders.ladybuddy.SplashActivity"
+        <activity android:name="com.whitehats.suraksha.CurrentLocation" />
+        <activity android:name="com.whitehats.suraksha.Flashing" />
+        <activity android:name="com.whitehats.suraksha.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -102,9 +105,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.teamDroiders.ladybuddy.MainActivity" />
+        <activity android:name="com.whitehats.suraksha.MainActivity" />
 
-        <receiver android:name="com.teamDroiders.ladybuddy.ScreenOnOffReceiver"
+        <receiver android:name="com.whitehats.suraksha.ScreenOnOffReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.SCREEN_OFF" />
@@ -114,7 +117,7 @@
         </receiver>
 
         <service
-            android:name="com.teamDroiders.ladybuddy.ScreenOnOffBackgroundService"
+            android:name="com.whitehats.suraksha.ScreenOnOffBackgroundService"
             android:enabled="true"
             android:exported="false" />
     </application>
