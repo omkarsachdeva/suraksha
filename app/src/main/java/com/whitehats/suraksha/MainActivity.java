@@ -19,6 +19,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 public class MainActivity extends AppCompatActivity {
     CardView siren, location, Settings, currentlocation, community, news, aboutUs, shareBtn;
     @Override
