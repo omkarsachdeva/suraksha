@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgapps2"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/Textapp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="सुraksha"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/saman___"
+                android:textColor="@color/cardview_light_background"
+                android:textSize="40sp" />
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/logout"
+                android:src="@drawable/baseline_arrow_forward_ios_24"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                />
+
+            <TextView
+                android:id="@+id/texttagline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Textapp"
+                android:text="हर कदम सुरक्षित"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp" />
+
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:contentDescription="TODO"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            tools:context=".MainActivity">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ENTER THE CODE"
+                    android:textSize="20sp"
+                    android:textAlignment="center"
+                    android:textColor="#423737"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="serif"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <EditText
+                        android:layout_width="40dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/backgroundbox"
+                        android:id="@+id/inputotp1"
+                        android:gravity="center"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:maxLength="1"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:ignore="LabelFor"/>
+                    <EditText
+                        android:layout_width="40dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/backgroundbox"
+                        android:id="@+id/inputotp2"
+                        android:gravity="center"
+                        android:layout_marginStart="5dp"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:maxLength="1"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:ignore="LabelFor"/>
+                    <EditText
+                        android:layout_width="40dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/backgroundbox"
+                        android:id="@+id/inputotp3"
+                        android:gravity="center"
+                        android:layout_marginStart="5dp"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:maxLength="1"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:ignore="LabelFor"/>
+                    <EditText
+                        android:layout_width="40dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/backgroundbox"
+                        android:id="@+id/inputotp4"
+                        android:gravity="center"
+                        android:layout_marginStart="5dp"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:maxLength="1"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:ignore="LabelFor"/>
+                    <EditText
+                        android:layout_width="40dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/backgroundbox"
+                        android:id="@+id/inputotp5"
+                        android:gravity="center"
+                        android:layout_marginStart="5dp"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:maxLength="1"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:ignore="LabelFor"/>
+                    <EditText
+                        android:layout_width="40dp"
+                        android:layout_height="46dp"
+                        android:background="@drawable/backgroundbox"
+                        android:id="@+id/inputotp6"
+                        android:gravity="center"
+                        android:layout_marginStart="5dp"
+                        android:imeOptions="actionNext"
+                        android:importantForAutofill="no"
+                        android:maxLength="1"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:ignore="LabelFor"/>
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Button
+                        android:id="@+id/submitcode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SUBMIT CODE"
+                        android:layout_marginTop="15dp"
+                        android:padding="15dp"
+                        android:layout_margin="30dp"
+                        android:layout_marginStart="60dp"
+                        android:layout_marginEnd="60dp"
+                        android:background="@drawable/backgroundbox"
+                        android:backgroundTint="#FD8EAF"
+                        android:textSize="16sp"
+
+                        android:textStyle="bold"/>
+                    <ProgressBar
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:id="@+id/progressbar_verify_otp"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
+                </FrameLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+
+</ScrollView>

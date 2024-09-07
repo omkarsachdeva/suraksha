@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "188281777763",
+    "project_id": "suraksha-842fc",
+    "storage_bucket": "suraksha-842fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188281777763:android:a10d729020db9243601256",
+        "android_client_info": {
+          "package_name": "com.whitehats.suraksha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgythAqlNZBLjKtd9ZrLNbXDxKXEjYjP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

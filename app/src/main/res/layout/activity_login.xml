@@ -16,7 +16,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/Textapp"
@@ -28,14 +28,6 @@
                 android:textColor="@color/cardview_light_background"
                 android:textSize="28sp" />
 
-            <ImageButton
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="5dp"
-                android:id="@+id/logout"
-                android:src="@drawable/baseline_arrow_forward_ios_24"
-                android:layout_alignParentEnd="true"/>
-
             <TextView
                 android:id="@+id/texttagline"
                 android:layout_width="wrap_content"
@@ -43,7 +35,7 @@
                 android:layout_below="@+id/Textapp"
                 android:layout_marginTop="3dp"
                 android:text="हर कदम सुरक्षित"
-                android:textColor="@color/white"
+                android:textColor="#52BAFF"
                 android:textSize="15sp" />
 
 
@@ -62,10 +54,11 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/camera"
+                android:id="@+id/user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
                 android:layout_margin="12dp"
                 android:clickable="true"
                 android:focusable="true"
@@ -91,7 +84,48 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Camera"
+                        android:text="User\nLogin"
+                        android:gravity="center"
+                        android:textColor="@color/common_google_signin_btn_text_light_pressed"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_margin="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_photographer__new"
+                        app:srcCompat="@drawable/ic_photographer__new" />
+
+                    <TextView
+                        android:id="@+id/current"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Parent\nLogin "
                         android:gravity="center"
                         android:textColor="@color/common_google_signin_btn_text_light_pressed"
                         android:textSize="16sp" />

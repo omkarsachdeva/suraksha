@@ -16,12 +16,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
-    CardView siren, location, Settings, currentlocation, community, news, aboutUs, shareBtn , monitoring;
+    CardView siren, location, Settings, currentlocation, community, news, aboutUs, shareBtn , emergency;
+    ImageButton profile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -96,7 +98,16 @@ public class MainActivity extends AppCompatActivity {
         news = findViewById( R.id.News );
         aboutUs = findViewById( R.id.about_us );
         // community=findViewById (R.id.community);
-        monitoring = findViewById(R.id.monitoring);
+       emergency = findViewById(R.id.emergency);
+
+       profile = findViewById(R.id.profile);
+       profile.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Intent intent = new Intent(MainActivity.this,ProfilePage.class);
+               startActivity(intent);
+           }
+       });
         siren.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,10 +166,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        monitoring.setOnClickListener(new View.OnClickListener() {
+        emergency.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this , MonitoringActivity.class);
+                Intent intent = new Intent(MainActivity.this , EmergencyContactsActivity.class);
                 startActivity(intent);
             }
         });
