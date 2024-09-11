@@ -1,23 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FDB1D7">
+
+    <Button
+        android:id="@+id/btn_add_new_contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ADD NEW CONTACT"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/et_contact_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter the Name"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/backgroundbox"
+        android:padding="12dp"
+        android:textColor="@color/black" />
 
     <EditText
         android:id="@+id/et_phone_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter phone number"
-        android:inputType="phone" />
-
-    <Button
-        android:id="@+id/btn_add_contact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Contact"
-        android:layout_gravity="end" />
+        android:hint="Phone No"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/backgroundbox"
+        android:inputType="phone"
+        android:padding="12dp"
+        android:textColor="@color/black" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_contacts"
@@ -25,13 +45,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:paddingTop="16dp"
-        android:paddingBottom="16dp" />
-
-    <Button
-        android:id="@+id/btn_submit_contacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit Contacts"
-        android:layout_gravity="center_horizontal" />
+        android:paddingBottom="16dp"
+        android:scrollbars="vertical" />
 
 </LinearLayout>

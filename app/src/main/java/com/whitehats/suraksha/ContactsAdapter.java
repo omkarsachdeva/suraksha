@@ -3,32 +3,49 @@ package com.whitehats.suraksha;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.List;
 
-public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHolder> {
+public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder> {
 
-    private List<String> contactsList;
+    private List<Contact> contactsList;
+    private DatabaseReference databaseReference;
 
-    public ContactsAdapter(List<String> contactsList) {
+    public ContactsAdapter(List<Contact> contactsList, DatabaseReference databaseReference) {
         this.contactsList = contactsList;
+        this.databaseReference = databaseReference;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
-        return new ViewHolder(view);
+    public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact, parent, false);
+        return new ContactViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String contact = contactsList.get(position);
-        holder.contactTextView.setText(contact);
+    public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
+        Contact contact = contactsList.get(position);
+        holder.tvContactName.setText(contact.getName());
+        holder.tvContactPhone.setText(contact.getPhoneNumber());
+
+        holder.btnDeleteContact.setOnClickListener(v -> {
+            // Remove from Firebase
+            databaseReference.child(contact.getId()).removeValue().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    contactsList.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, contactsList.size());
+                }
+            });
+        });
     }
 
     @Override
@@ -36,13 +53,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         return contactsList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ContactViewHolder extends RecyclerView.ViewHolder {
+        TextView tvContactName, tvContactPhone;
+        Button btnDeleteContact;
 
-        TextView contactTextView;
-
-        public ViewHolder(@NonNull View itemView) {
+        public ContactViewHolder(@NonNull View itemView) {
             super(itemView);
-            contactTextView = itemView.findViewById(android.R.id.text1);
+            tvContactName = itemView.findViewById(R.id.tv_contact_name);
+            tvContactPhone = itemView.findViewById(R.id.tv_contact_phone);
+            btnDeleteContact = itemView.findViewById(R.id.btn_delete_contact);
         }
     }
 }
