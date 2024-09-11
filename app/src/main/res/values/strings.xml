@@ -16,4 +16,44 @@
     <string name="instructions">Instructions</string>
     <string name="settings">Settings</string>
     <string name="textwarn">Warning to accept permission</string>
+    <string name="guidelines"> <b>1. In Public Places</b>
+        \n
+\nStay in Well-Populated Areas:  Avoid isolated spaces, particularly after dark.
+\nCarry Essentials: Always have a charged phone, emergency contact numbers, and some form of ID on you.
+\nAvoid Flashing Valuables: Keep expensive items like jewelry and electronics hidden in public to avoid attracting attention.
+\nBe Confident: Walk confidently, with purpose, and avoid appearing lost. Predators often target those who seem unsure or vulnerable.
+        \n<b>2. At Home</b>
+        \n
+\nSecure Your Home: Ensure doors and windows are locked, especially at night or when you are alone. Install security systems or smart locks if possible.
+\nUse Peepholes: Verify who is at the door before opening it.
+\nKeep Emergency Contacts: Post emergency numbers where they can be easily accessed by everyone in the house.
+\nAvoid Revealing Habits: Don’t advertise on social media when you’re alone at home or away on vacation.
+\n<b>3. When Driving</b>
+        \n
+\nPark in Well-Lit Areas: Avoid parking in dark, isolated spots.
+\nLock Doors: Always lock your car doors once inside and when leaving.
+\nKeep Gas Tank Full: Always have enough fuel to avoid being stranded in unsafe areas.
+\nDon’t Pick Up Strangers: Avoid giving lifts to strangers, and don’t engage with aggressive or suspicious drivers.
+\n<b>4. In Rideshares or Taxis</b>
+        \n
+\nVerify the Driver: Check the license plate and driver’s profile on the app before getting into the vehicle.
+\nSit in the Back: This provides more control over the situation and a safer exit option.
+\nShare Trip Details: Use your phone’s location-sharing feature to inform someone of your journey.
+\n<b>5. Online Safety</b>
+        \n
+\nUse Strong Passwords: Avoid using easily guessed passwords for your accounts. Use two-factor authentication for added security.
+\nAvoid Suspicious Links: Be cautious of clicking on unknown links, especially from emails or messages from unknown people.
+\nReport Harassment: If someone is harassing or threatening you online, report their behavior to the platform and consider blocking them.
+\n<b>6. Handling Uncomfortable Situations</b>
+        \n
+\nVerbal Assertiveness: Be firm and direct when saying “no” in uncomfortable situations. Don’t feel pressured to explain.
+\nSafe Distance: Keep a safe physical distance from people who make you uncomfortable.
+\nKnow Basic Self-Defense: Learn simple self-defense techniques or carry safety devices like pepper spray or alarms.
+\n<b>7. Emergency Action</b>
+        \n
+\nCreate an Exit Plan: Always know where the nearest exit is when in unfamiliar places.
+\nUse a Code Word: Establish a code word with friends or family to signal that you need help without alerting someone who may be threatening you.
+\nScream for Help: In emergency situations, don’t hesitate to scream, draw attention, and run to a safe location.
+</string>
+
 </resources>

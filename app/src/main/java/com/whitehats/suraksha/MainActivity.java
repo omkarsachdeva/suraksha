@@ -25,7 +25,7 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    CardView siren, location, Settings, currentlocation, community, news, aboutUs, shareBtn , emergency;
+    CardView siren, location, Settings, currentlocation, community, news, aboutUs, shareBtn , emergency,incident,fake,safety;
     ImageButton profile;
     private static final int PERMISSION_REQUEST_CODE = 100;
     @Override
@@ -109,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
         aboutUs = findViewById( R.id.about_us );
         // community=findViewById (R.id.community);
        emergency = findViewById(R.id.emergency);
+       incident = findViewById(R.id.incident);
+       fake = findViewById(R.id.fake);
+       safety = findViewById(R.id.safety);
 
        profile = findViewById(R.id.profile);
        profile.setOnClickListener(new View.OnClickListener() {
@@ -180,6 +183,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this , EmergencyContactsActivity.class);
+                startActivity(intent);
+            }
+        });
+        incident.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this , Incident_reporting.class);
+                startActivity(intent);
+            }
+        });
+        fake.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this , fake_call.class);
+                startActivity(intent);
+            }
+        });
+        safety.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this , safety.class);
                 startActivity(intent);
             }
         });
