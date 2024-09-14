@@ -25,7 +25,7 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    CardView siren, location, Settings, currentlocation, community, news, aboutUs, shareBtn , emergency,incident,fake,safety;
+    CardView siren, location, Settings, currentlocation, community, news, aboutUs, shareBtn , emergency,incident,fake,safety,hotspot;
     ImageButton profile;
     private static final int PERMISSION_REQUEST_CODE = 100;
     @Override
@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
        incident = findViewById(R.id.incident);
        fake = findViewById(R.id.fake);
        safety = findViewById(R.id.safety);
+       /*hotspot = findViewById(R.id.hotspot);*/
 
        profile = findViewById(R.id.profile);
        profile.setOnClickListener(new View.OnClickListener() {
@@ -207,6 +208,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        /*hotspot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this , HotspotRegion.class);
+                startActivity(intent);
+            }
+        });*/
 
     }
     private void checkAndRequestPermissions() {

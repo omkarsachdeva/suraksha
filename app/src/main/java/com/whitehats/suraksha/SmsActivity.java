@@ -176,6 +176,7 @@ public class SmsActivity extends AppCompatActivity {
                     if (!phoneNumber.isEmpty()) {
                         smsManager.sendTextMessage(phoneNumber, null, message, null, null);
                         Toast.makeText(SmsActivity.this, "Message sent to " + phoneNumber, Toast.LENGTH_SHORT).show();
+                        storeLocationInFirebase(location.getLatitude(),location.getLongitude());
                     }
                 }
 
@@ -199,6 +200,14 @@ public class SmsActivity extends AppCompatActivity {
             }
         } else {
             Toast.makeText(this, "No phone number available to call", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void storeLocationInFirebase(double latitude , double longitude){
+        String alertId = databaseReference.push().getKey();
+        if(alertId!=null){
+            SOSData sosData = new SOSData(latitude,longitude);
+            databaseReference.child(alertId).setValue(sosData);
         }
     }
 
