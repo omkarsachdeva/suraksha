@@ -23,6 +23,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -65,7 +66,8 @@ public class SmsActivity extends AppCompatActivity {
 
         // Retrieve emergency contacts from Firebase
         phoneNumbers = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("emergency_contacts");
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();  // Get the current user's ID
+        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("emergency_contacts");
 
         // Reference the Try It button and Save button
         tryItButton = findViewById(R.id.button);

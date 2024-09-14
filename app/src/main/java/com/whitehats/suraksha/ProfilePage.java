@@ -40,10 +40,8 @@ public class ProfilePage extends AppCompatActivity {
         regenerateCodeButton = findViewById(R.id.buttongetotp);
 
         sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-
-
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        databaseReference = FirebaseDatabase.getInstance().getReference("codes_to_users");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         String savedCode = sharedPreferences.getString("generated_code", null);
         if (savedCode != null) {
@@ -66,28 +64,19 @@ public class ProfilePage extends AppCompatActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Clear the session and log the user out
-                SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean("is_logged_in", false);
-                editor.apply();
-
-                FirebaseAuth.getInstance().signOut();
-
-                // Go back to login screen
-                startActivity(new Intent(ProfilePage.this, LoginActivity.class));
-                finish();
+                logout();
             }
         });
     }
 
     private void generateAndDisplayCode() {
+        String oldCode = sharedPreferences.getString("generated_code", null);
+        if (oldCode != null) {
+            databaseReference.child("codes_to_users").child(oldCode).removeValue();
+        }
+
         generatedCode = generateRandomCode(6);
-
-        // Display the code in OTP fields
         displayCode(generatedCode);
-
-        // Save the generated code and userId mapping to Firebase
         saveCodeToFirebaseAndSharedPreferences(generatedCode);
     }
     private void displayCode(String code) {
@@ -102,11 +91,10 @@ public class ProfilePage extends AppCompatActivity {
     }
     private void saveCodeToFirebaseAndSharedPreferences(String code) {
         // Save the generated code to Firebase
-        databaseReference.child(code).setValue(userId).addOnCompleteListener(task -> {
+        databaseReference.child("codes_to_users").child(code).setValue(userId);
+        databaseReference.child("users").child(userId).child("unique_code").setValue(code).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(ProfilePage.this, "Code saved successfully", Toast.LENGTH_SHORT).show();
-
-                // Save the generated code to SharedPreferences
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("generated_code", code);
                 editor.apply();
@@ -118,5 +106,19 @@ public class ProfilePage extends AppCompatActivity {
 
     private String generateRandomCode(int length) {
         return UUID.randomUUID().toString().replaceAll("-", "").substring(0, length);
+    }
+
+    private void logout() {
+        // Clear the session and log the user out
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("is_logged_in", false);
+        editor.remove("generated_code");
+        editor.apply();
+
+        FirebaseAuth.getInstance().signOut();
+
+        // Go back to login screen
+        startActivity(new Intent(ProfilePage.this, LoginActivity.class));
+        finish();
     }
 }

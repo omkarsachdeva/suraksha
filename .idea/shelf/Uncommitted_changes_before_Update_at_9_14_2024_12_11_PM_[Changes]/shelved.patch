@@ -1,0 +1,230 @@
+Index: app/src/main/java/com/whitehats/suraksha/SmsActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.whitehats.suraksha;\r\n\r\nimport android.Manifest;\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.content.pm.PackageManager;\r\nimport android.location.Address;\r\nimport android.location.Geocoder;\r\nimport android.location.Location;\r\nimport android.net.Uri;\r\nimport android.os.Bundle;\r\nimport android.telephony.SmsManager;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.core.app.ActivityCompat;\r\nimport androidx.core.content.ContextCompat;\r\n\r\nimport com.google.android.gms.location.FusedLocationProviderClient;\r\nimport com.google.android.gms.location.LocationServices;\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\n\r\nimport java.io.IOException;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\nimport java.util.Locale;\r\n\r\npublic class SmsActivity extends AppCompatActivity {\r\n\r\n    private FusedLocationProviderClient fusedLocationProviderClient;\r\n    private DatabaseReference databaseReference;\r\n    private List<String> phoneNumbers;\r\n    private EditText messageInput;\r\n    private Button tryItButton, saveMessageButton;\r\n    private SharedPreferences sharedPreferences;\r\n\r\n    private static final String DEFAULT_MESSAGE = \"I am in danger, please come fast...\";\r\n    private static final String PREF_KEY_CUSTOM_MESSAGE = \"custom_message\";\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_sms);\r\n\r\n        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);\r\n\r\n        // Initialize SharedPreferences\r\n        sharedPreferences = getSharedPreferences(\"sms_preferences\", MODE_PRIVATE);\r\n\r\n        // Retrieve the message input EditText from XML\r\n        messageInput = findViewById(R.id.txt_sms);\r\n\r\n        // Set the saved custom message (if any) in the EditText when the activity starts\r\n        String savedMessage = sharedPreferences.getString(PREF_KEY_CUSTOM_MESSAGE, \"\");\r\n        messageInput.setText(savedMessage);\r\n\r\n        // Retrieve emergency contacts from Firebase\r\n        phoneNumbers = new ArrayList<>();\r\n        databaseReference = FirebaseDatabase.getInstance().getReference(\"emergency_contacts\");\r\n\r\n        // Reference the Try It button and Save button\r\n        tryItButton = findViewById(R.id.button);\r\n        saveMessageButton = findViewById(R.id.Save_btn);\r\n\r\n        // Set click listener for the Save Message button\r\n        saveMessageButton.setOnClickListener(v -> {\r\n            saveCustomMessage();\r\n        });\r\n\r\n        // Set click listener for the Try It button\r\n        tryItButton.setOnClickListener(v -> {\r\n            // Load contacts from Firebase and then send messages/call\r\n            loadEmergencyContacts();\r\n        });\r\n    }\r\n\r\n    private void saveCustomMessage() {\r\n        String customMessage = messageInput.getText().toString().trim();\r\n\r\n        if (!customMessage.isEmpty()) {\r\n            // Save the custom message to SharedPreferences\r\n            sharedPreferences.edit().putString(PREF_KEY_CUSTOM_MESSAGE, customMessage).apply();\r\n            Toast.makeText(SmsActivity.this, \"Message saved successfully\", Toast.LENGTH_SHORT).show();\r\n        } else {\r\n            // If the message is empty, clear the custom message in SharedPreferences\r\n            sharedPreferences.edit().putString(PREF_KEY_CUSTOM_MESSAGE, \"\").apply();\r\n            Toast.makeText(SmsActivity.this, \"Message cleared, default will be used\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n\r\n    private void loadEmergencyContacts() {\r\n        databaseReference.addValueEventListener(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                phoneNumbers.clear(); // Clear the list before adding new contacts\r\n\r\n                for (DataSnapshot contactSnapshot : snapshot.getChildren()) {\r\n                    Contact contact = contactSnapshot.getValue(Contact.class);\r\n                    if (contact != null) {\r\n                        phoneNumbers.add(contact.getPhoneNumber());\r\n                    }\r\n                }\r\n\r\n                // After contacts are loaded, try sending the SMS and making calls\r\n                tryIt();\r\n            }\r\n\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError error) {\r\n                Toast.makeText(SmsActivity.this, \"Failed to load emergency contacts\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        });\r\n    }\r\n\r\n    private void tryIt() {\r\n        // Ensure we have permission to send SMS and make calls\r\n        if (ContextCompat.checkSelfPermission(SmsActivity.this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {\r\n            if (ContextCompat.checkSelfPermission(SmsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {\r\n                sendLocationMessage();\r\n            } else {\r\n                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);\r\n            }\r\n        } else {\r\n            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 0);\r\n        }\r\n    }\r\n\r\n    // Send SMS with location details to all emergency contacts\r\n    private void sendLocationMessage() {\r\n        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {\r\n            return;\r\n        }\r\n\r\n        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {\r\n            @Override\r\n            public void onComplete(@NonNull Task<Location> task) {\r\n                // Initialize location\r\n                Location location = task.getResult();\r\n                String message;\r\n\r\n                // Retrieve custom message from SharedPreferences or use the default message\r\n                String customMessage = sharedPreferences.getString(PREF_KEY_CUSTOM_MESSAGE, \"\").trim();\r\n                if (!customMessage.isEmpty()) {\r\n                    message = customMessage;\r\n                } else {\r\n                    message = DEFAULT_MESSAGE;\r\n                }\r\n\r\n                if (location != null) {\r\n                    try {\r\n                        // Get location details\r\n                        Geocoder geocoder = new Geocoder(SmsActivity.this, Locale.getDefault());\r\n                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);\r\n                        message += \" I am at \" + addresses.get(0).getLatitude() +\r\n                                \", \" + addresses.get(0).getLongitude() + \", \" + addresses.get(0).getCountryName() +\r\n                                \", \" + addresses.get(0).getLocality() + \", \" + addresses.get(0).getAddressLine(0);\r\n                    } catch (IOException e) {\r\n                        e.printStackTrace();\r\n                    }\r\n                } else {\r\n                    message += \" Software was not able to retrieve live location due to some internal errors.\";\r\n                }\r\n\r\n                // Send SMS to all emergency contacts\r\n                SmsManager smsManager = SmsManager.getDefault();\r\n                for (String phoneNumber : phoneNumbers) {\r\n                    if (!phoneNumber.isEmpty()) {\r\n                        smsManager.sendTextMessage(phoneNumber, null, message, null, null);\r\n                        Toast.makeText(SmsActivity.this, \"Message sent to \" + phoneNumber, Toast.LENGTH_SHORT).show();\r\n                        storeLocationInFirebase(location.getLatitude(),location.getLongitude());\r\n                    }\r\n                }\r\n\r\n                // Optionally make a call after sending the SMS\r\n                makeCall();\r\n            }\r\n        });\r\n    }\r\n\r\n    // Call the first number in the list\r\n    private void makeCall() {\r\n        if (phoneNumbers.size() > 0 && !phoneNumbers.get(0).isEmpty()) {\r\n            String phoneNumber = phoneNumbers.get(0);\r\n            Intent intent = new Intent(Intent.ACTION_CALL);\r\n            intent.setData(Uri.parse(\"tel:\" + phoneNumber));\r\n\r\n            if (ContextCompat.checkSelfPermission(SmsActivity.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {\r\n                startActivity(intent);\r\n            } else {\r\n                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 1);\r\n            }\r\n        } else {\r\n            Toast.makeText(this, \"No phone number available to call\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n\r\n    private void storeLocationInFirebase(double latitude , double longitude){\r\n        String alertId = databaseReference.push().getKey();\r\n        if(alertId!=null){\r\n            SOSData sosData = new SOSData(latitude,longitude);\r\n            databaseReference.child(alertId).setValue(sosData);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {\r\n        super.onRequestPermissionsResult(requestCode, permissions, grantResults);\r\n\r\n        // Handle SMS and CALL permissions\r\n        if (requestCode == 0) {  // For SMS permissions\r\n            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {\r\n                tryIt();\r\n            } else {\r\n                Toast.makeText(this, \"Permission denied for sending SMS\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        } else if (requestCode == 1) {  // For CALL permissions\r\n            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {\r\n                makeCall();\r\n            } else {\r\n                Toast.makeText(this, \"Permission denied for making a call\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        } else if (requestCode == 44) {  // For Location permissions\r\n            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {\r\n                sendLocationMessage();\r\n            } else {\r\n                Toast.makeText(this, \"Permission denied for accessing location\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/whitehats/suraksha/SmsActivity.java b/app/src/main/java/com/whitehats/suraksha/SmsActivity.java
+--- a/app/src/main/java/com/whitehats/suraksha/SmsActivity.java	(revision 81d8038fe857c00e4ea54fd3df457fd2353536d3)
++++ b/app/src/main/java/com/whitehats/suraksha/SmsActivity.java	(date 1726295869394)
+@@ -23,6 +23,7 @@
+ import com.google.android.gms.location.LocationServices;
+ import com.google.android.gms.tasks.OnCompleteListener;
+ import com.google.android.gms.tasks.Task;
++import com.google.firebase.auth.FirebaseAuth;
+ import com.google.firebase.database.DataSnapshot;
+ import com.google.firebase.database.DatabaseError;
+ import com.google.firebase.database.DatabaseReference;
+@@ -65,7 +66,8 @@
+ 
+         // Retrieve emergency contacts from Firebase
+         phoneNumbers = new ArrayList<>();
+-        databaseReference = FirebaseDatabase.getInstance().getReference("emergency_contacts");
++        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();  // Get the current user's ID
++        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("emergency_contacts");
+ 
+         // Reference the Try It button and Save button
+         tryItButton = findViewById(R.id.button);
+Index: app/src/main/java/com/whitehats/suraksha/EmergencyContactsActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.whitehats.suraksha;\r\n\r\nimport android.os.Bundle;\r\nimport android.text.TextUtils;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\npublic class EmergencyContactsActivity extends AppCompatActivity {\r\n\r\n    private EditText etContactName, etPhoneNumber;\r\n    private Button btnAddNewContact;\r\n    private RecyclerView recyclerViewContacts;\r\n    private ContactsAdapter contactsAdapter;\r\n    private List<Contact> contactsList = new ArrayList<>();\r\n    private DatabaseReference databaseReference;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_emergency_contacts);\r\n\r\n        etContactName = findViewById(R.id.et_contact_name);\r\n        etPhoneNumber = findViewById(R.id.et_phone_number);\r\n        btnAddNewContact = findViewById(R.id.btn_add_new_contact);\r\n        //btnSubmitContacts = findViewById(R.id.btn_submit_contacts);\r\n        recyclerViewContacts = findViewById(R.id.recycler_view_contacts);\r\n\r\n        databaseReference = FirebaseDatabase.getInstance().getReference(\"emergency_contacts\");\r\n\r\n        // Setup RecyclerView\r\n        contactsAdapter = new ContactsAdapter(contactsList, databaseReference);\r\n        recyclerViewContacts.setLayoutManager(new LinearLayoutManager(this));\r\n        recyclerViewContacts.setAdapter(contactsAdapter);\r\n\r\n        // Load contacts from Firebase\r\n        loadContactsFromFirebase();\r\n\r\n        // Add a new contact\r\n        btnAddNewContact.setOnClickListener(v -> {\r\n            String name = etContactName.getText().toString().trim();\r\n            String phone = etPhoneNumber.getText().toString().trim();\r\n            if (TextUtils.isEmpty(name) || TextUtils.isEmpty(phone)) {\r\n                Toast.makeText(EmergencyContactsActivity.this, \"Please enter name and phone number\", Toast.LENGTH_SHORT).show();\r\n                return;\r\n            }\r\n\r\n            // Create a new Contact object\r\n            String id = databaseReference.push().getKey();\r\n            Contact contact = new Contact(id, name, phone);\r\n\r\n            // Add contact to Firebase\r\n            databaseReference.child(id).setValue(contact).addOnCompleteListener(task -> {\r\n                if (task.isSuccessful()) {\r\n                    Toast.makeText(EmergencyContactsActivity.this, \"Contact added\", Toast.LENGTH_SHORT).show();\r\n                    contactsList.add(contact);\r\n                    contactsAdapter.notifyDataSetChanged();\r\n                } else {\r\n                    Toast.makeText(EmergencyContactsActivity.this, \"Failed to add contact\", Toast.LENGTH_SHORT).show();\r\n                }\r\n            });\r\n\r\n            // Clear the input fields\r\n            etContactName.setText(\"\");\r\n            etPhoneNumber.setText(\"\");\r\n        });\r\n    }\r\n\r\n    private void loadContactsFromFirebase() {\r\n        databaseReference.addValueEventListener(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                contactsList.clear();\r\n                for (DataSnapshot contactSnapshot : snapshot.getChildren()) {\r\n                    Contact contact = contactSnapshot.getValue(Contact.class);\r\n                    contactsList.add(contact);\r\n                }\r\n                contactsAdapter.notifyDataSetChanged();\r\n            }\r\n\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError error) {\r\n                Toast.makeText(EmergencyContactsActivity.this, \"Failed to load contacts\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        });\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/whitehats/suraksha/EmergencyContactsActivity.java b/app/src/main/java/com/whitehats/suraksha/EmergencyContactsActivity.java
+--- a/app/src/main/java/com/whitehats/suraksha/EmergencyContactsActivity.java	(revision 81d8038fe857c00e4ea54fd3df457fd2353536d3)
++++ b/app/src/main/java/com/whitehats/suraksha/EmergencyContactsActivity.java	(date 1726293598223)
+@@ -12,6 +12,7 @@
+ import androidx.recyclerview.widget.LinearLayoutManager;
+ import androidx.recyclerview.widget.RecyclerView;
+ 
++import com.google.firebase.auth.FirebaseAuth;
+ import com.google.firebase.database.DataSnapshot;
+ import com.google.firebase.database.DatabaseError;
+ import com.google.firebase.database.DatabaseReference;
+@@ -41,7 +42,9 @@
+         //btnSubmitContacts = findViewById(R.id.btn_submit_contacts);
+         recyclerViewContacts = findViewById(R.id.recycler_view_contacts);
+ 
+-        databaseReference = FirebaseDatabase.getInstance().getReference("emergency_contacts");
++        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
++        databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("emergency_contacts");
++
+ 
+         // Setup RecyclerView
+         contactsAdapter = new ContactsAdapter(contactsList, databaseReference);
+Index: app/src/main/java/com/whitehats/suraksha/ScreenOnOffReceiver.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.whitehats.suraksha;\r\n\r\nimport android.content.BroadcastReceiver;\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.Manifest;\r\nimport android.content.pm.PackageManager;\r\nimport android.location.Address;\r\nimport android.location.Geocoder;\r\nimport android.location.Location;\r\nimport android.media.MediaPlayer;\r\nimport android.net.Uri;\r\nimport android.os.CountDownTimer;\r\nimport android.telephony.SmsManager;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.core.app.ActivityCompat;\r\nimport androidx.core.content.ContextCompat;\r\n\r\nimport com.google.android.gms.location.FusedLocationProviderClient;\r\nimport com.google.android.gms.location.LocationServices;\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\n\r\nimport java.io.IOException;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\nimport java.util.Locale;\r\n\r\npublic class ScreenOnOffReceiver extends BroadcastReceiver {\r\n    public static final String SCREEN_TOGGLE_TAG = \"ScreenOnOffReceiver\";\r\n    private static final int TAP_THRESHOLD = 10; // Time limit in seconds to reset tap count\r\n    private int powerBtnTapCount = 0;\r\n    private MediaPlayer mediaPlayer;\r\n    private FusedLocationProviderClient fusedLocationProviderClient;\r\n    private List<String> emergencyContactNumbers = new ArrayList<>();\r\n\r\n    private CountDownTimer countDownTimer = new CountDownTimer(TAP_THRESHOLD * 1000, 1000) {\r\n        @Override\r\n        public void onTick(long millisUntilFinished) {\r\n            // Do nothing, just wait for taps\r\n        }\r\n\r\n        @Override\r\n        public void onFinish() {\r\n            powerBtnTapCount = 0; // Reset the tap count if the threshold is reached\r\n        }\r\n    };\r\n\r\n    @Override\r\n    public void onReceive(Context context, Intent intent) {\r\n        String action = intent.getAction();\r\n        if (Intent.ACTION_SCREEN_OFF.equals(action) || Intent.ACTION_SCREEN_ON.equals(action)) {\r\n            powerBtnTapCount++;\r\n            countDownTimer.start(); // Start/continue the timer on every tap\r\n\r\n            if (powerBtnTapCount == 3) {\r\n                // First, fetch emergency contacts from Firebase, then send SMS and make a call\r\n                fetchEmergencyContactsAndSend(context);\r\n                powerBtnTapCount = 0; // Reset tap count after action\r\n                countDownTimer.cancel(); // Cancel timer\r\n            } else if (powerBtnTapCount == 6) {\r\n                startSiren(context); // Start the siren on 6 taps\r\n                powerBtnTapCount = 0; // Reset tap count after action\r\n                countDownTimer.cancel(); // Cancel timer\r\n            } else if (powerBtnTapCount == 3 && mediaPlayer != null && mediaPlayer.isPlaying()) {\r\n                stopSiren(context); // Stop the siren on 3 taps\r\n                powerBtnTapCount = 0; // Reset tap count after action\r\n                countDownTimer.cancel(); // Cancel timer\r\n            }\r\n        }\r\n    }\r\n\r\n    // Fetch emergency contacts from Firebase\r\n    private void fetchEmergencyContactsAndSend(Context context) {\r\n        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(\"emergency_contacts\");\r\n\r\n        databaseReference.addValueEventListener(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                emergencyContactNumbers.clear(); // Clear the list before adding new contacts\r\n                for (DataSnapshot contactSnapshot : snapshot.getChildren()) {\r\n                    Contact contact = contactSnapshot.getValue(Contact.class);\r\n                    if (contact != null && contact.getPhoneNumber() != null) {\r\n                        emergencyContactNumbers.add(contact.getPhoneNumber());\r\n                    }\r\n                }\r\n\r\n                // Now that contacts are loaded, send SMS and make a call\r\n                sendSmsAndMakeCall(context);\r\n            }\r\n\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError error) {\r\n                Toast.makeText(context, \"Failed to load emergency contacts\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        });\r\n    }\r\n\r\n    private void sendSmsAndMakeCall(Context context) {\r\n        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);\r\n\r\n        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED\r\n                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {\r\n            return; // Handle lack of permission for location access\r\n        }\r\n\r\n        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {\r\n            @Override\r\n            public void onComplete(@NonNull Task<Location> task) {\r\n                Location location = task.getResult();\r\n                String message = \"I am in danger, please come fast...\";\r\n\r\n                if (location != null) {\r\n                    try {\r\n                        Geocoder geocoder = new Geocoder(context, Locale.getDefault());\r\n                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);\r\n                        message += \" I am at \" + addresses.get(0).getLatitude() + \", \" +\r\n                                addresses.get(0).getLongitude() + \", \" + addresses.get(0).getCountryName() +\r\n                                \", \" + addresses.get(0).getLocality() + \", \" + addresses.get(0).getAddressLine(0);\r\n                    } catch (IOException e) {\r\n                        e.printStackTrace();\r\n                    }\r\n                }\r\n\r\n                // Send SMS to all emergency contacts\r\n                SmsManager smsManager = SmsManager.getDefault();\r\n\r\n                for (String phoneNumber : emergencyContactNumbers) {\r\n                    if (!phoneNumber.isEmpty()) {\r\n                        smsManager.sendTextMessage(phoneNumber, null, message, null, null);\r\n                        Toast.makeText(context, \"Message sent to \" + phoneNumber, Toast.LENGTH_SHORT).show();\r\n                    }\r\n                }\r\n\r\n                // Check if CALL_PHONE permission is granted\r\n                if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {\r\n                    // Make the call if permission is granted\r\n                    if (!emergencyContactNumbers.isEmpty()) {\r\n                        makePhoneCall(context, emergencyContactNumbers.get(0)); // Call the first contact\r\n                    }\r\n                } else {\r\n                    // Handle missing permission by showing a message\r\n                    Toast.makeText(context, \"Call permission not granted\", Toast.LENGTH_SHORT).show();\r\n                }\r\n            }\r\n        });\r\n    }\r\n\r\n    private void makePhoneCall(Context context, String phoneNumber) {\r\n        Intent callIntent = new Intent(Intent.ACTION_CALL);\r\n        callIntent.setData(Uri.parse(\"tel:\" + phoneNumber));\r\n\r\n        try {\r\n            // Check for the CALL_PHONE permission\r\n            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {\r\n                callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);\r\n                context.startActivity(callIntent);\r\n            } else {\r\n                Toast.makeText(context, \"Call permission not granted\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        } catch (SecurityException e) {\r\n            e.printStackTrace();\r\n            Toast.makeText(context, \"Failed to make call due to missing permissions\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n\r\n    private void startSiren(Context context) {\r\n        if (mediaPlayer == null) {\r\n            mediaPlayer = MediaPlayer.create(context, R.raw.police_siren); // Replace with actual siren sound\r\n        }\r\n        mediaPlayer.start();\r\n        mediaPlayer.setLooping(true);\r\n        Toast.makeText(context, \"Siren started\", Toast.LENGTH_SHORT).show();\r\n    }\r\n\r\n    private void stopSiren(Context context) {\r\n        if (mediaPlayer != null && mediaPlayer.isPlaying()) {\r\n            mediaPlayer.stop();\r\n            mediaPlayer.release();\r\n            mediaPlayer = null;\r\n            Toast.makeText(context, \"Siren stopped\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/whitehats/suraksha/ScreenOnOffReceiver.java b/app/src/main/java/com/whitehats/suraksha/ScreenOnOffReceiver.java
+--- a/app/src/main/java/com/whitehats/suraksha/ScreenOnOffReceiver.java	(revision 81d8038fe857c00e4ea54fd3df457fd2353536d3)
++++ b/app/src/main/java/com/whitehats/suraksha/ScreenOnOffReceiver.java	(date 1726295986336)
+@@ -13,6 +13,7 @@
+ import android.os.CountDownTimer;
+ import android.telephony.SmsManager;
+ import android.widget.Toast;
++import com.google.firebase.auth.FirebaseAuth;
+ 
+ import androidx.annotation.NonNull;
+ import androidx.core.app.ActivityCompat;
+@@ -79,7 +80,9 @@
+ 
+     // Fetch emergency contacts from Firebase
+     private void fetchEmergencyContactsAndSend(Context context) {
+-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("emergency_contacts");
++        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();  // Get the current user's ID
++        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("emergency_contacts");
++
+ 
+         databaseReference.addValueEventListener(new ValueEventListener() {
+             @Override
+Index: app/src/main/java/com/whitehats/suraksha/ParentCode.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.whitehats.suraksha;\r\n\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.os.Bundle;\r\nimport android.text.TextUtils;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.ImageButton;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\n\r\npublic class ParentCode extends AppCompatActivity {\r\n    private ImageButton logoutButton;\r\n    private EditText inputOtp1, inputOtp2, inputOtp3, inputOtp4, inputOtp5, inputOtp6;\r\n    private Button verifyButton;\r\n    private DatabaseReference databaseReference;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_parent_code);\r\n\r\n        inputOtp1 = findViewById(R.id.inputotp1);\r\n        inputOtp2 = findViewById(R.id.inputotp2);\r\n        inputOtp3 = findViewById(R.id.inputotp3);\r\n        inputOtp4 = findViewById(R.id.inputotp4);\r\n        inputOtp5 = findViewById(R.id.inputotp5);\r\n        inputOtp6 = findViewById(R.id.inputotp6);\r\n        verifyButton = findViewById(R.id.submitcode);\r\n\r\n        databaseReference = FirebaseDatabase.getInstance().getReference(\"codes_to_users\");\r\n\r\n        verifyButton.setOnClickListener(v -> verifyCode());\r\n\r\n        logoutButton = findViewById(R.id.logout);\r\n        logoutButton.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                // Clear session and log out\r\n                SharedPreferences prefs = getSharedPreferences(\"user_prefs\", MODE_PRIVATE);\r\n                SharedPreferences.Editor editor = prefs.edit();\r\n                editor.putBoolean(\"is_logged_in\", false);\r\n                editor.apply();\r\n\r\n                FirebaseAuth.getInstance().signOut();\r\n\r\n                // Redirect to Login Activity\r\n                startActivity(new Intent(ParentCode.this, LoginActivity.class));\r\n                finish();\r\n            }\r\n        });\r\n    }\r\n\r\n    private void verifyCode() {\r\n        // Get the code entered by the parent\r\n        String enteredCode = inputOtp1.getText().toString().trim() +\r\n                inputOtp2.getText().toString().trim() +\r\n                inputOtp3.getText().toString().trim() +\r\n                inputOtp4.getText().toString().trim() +\r\n                inputOtp5.getText().toString().trim() +\r\n                inputOtp6.getText().toString().trim();\r\n\r\n        if (TextUtils.isEmpty(enteredCode) || enteredCode.length() != 6) {\r\n            Toast.makeText(this, \"Please enter the full code\", Toast.LENGTH_SHORT).show();\r\n            return;\r\n        }\r\n\r\n        // Retrieve the userId associated with the entered emergency code\r\n        databaseReference.child(enteredCode).addListenerForSingleValueEvent(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot snapshot) {\r\n                String userId = snapshot.getValue(String.class);\r\n                if (userId != null) {\r\n                    // Code is correct, allow parent to log in\r\n                    Toast.makeText(ParentCode.this, \"Code verified!\", Toast.LENGTH_SHORT).show();\r\n                    // Redirect to parent main screen or monitoring activity\r\n                    Intent intent = new Intent(ParentCode.this, MonitoringActivity.class);\r\n                    intent.putExtra(\"USER_ID\", userId);  // Pass the userId to MonitoringActivity\r\n                    startActivity(intent);\r\n                    finish();\r\n                } else {\r\n                    Toast.makeText(ParentCode.this, \"Invalid code\", Toast.LENGTH_SHORT).show();\r\n                }\r\n            }\r\n\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError error) {\r\n                Toast.makeText(ParentCode.this, \"Failed to retrieve code\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        });\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/whitehats/suraksha/ParentCode.java b/app/src/main/java/com/whitehats/suraksha/ParentCode.java
+--- a/app/src/main/java/com/whitehats/suraksha/ParentCode.java	(revision 81d8038fe857c00e4ea54fd3df457fd2353536d3)
++++ b/app/src/main/java/com/whitehats/suraksha/ParentCode.java	(date 1726294197605)
+@@ -31,6 +31,13 @@
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_parent_code);
+ 
++        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
++        if (prefs.getBoolean("is_logged_in", false)) {
++            // Parent is already logged in, proceed to monitoring activity
++            navigateToMonitoringActivity(prefs.getString("USER_ID", null));
++            return;
++        }
++
+         inputOtp1 = findViewById(R.id.inputotp1);
+         inputOtp2 = findViewById(R.id.inputotp2);
+         inputOtp3 = findViewById(R.id.inputotp3);
+@@ -84,11 +91,14 @@
+                 if (userId != null) {
+                     // Code is correct, allow parent to log in
+                     Toast.makeText(ParentCode.this, "Code verified!", Toast.LENGTH_SHORT).show();
++                    SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
++                    SharedPreferences.Editor editor = prefs.edit();
++                    editor.putBoolean("is_logged_in", true);
++                    editor.putString("USER_ID", userId);
++                    editor.apply();
++
+                     // Redirect to parent main screen or monitoring activity
+-                    Intent intent = new Intent(ParentCode.this, MonitoringActivity.class);
+-                    intent.putExtra("USER_ID", userId);  // Pass the userId to MonitoringActivity
+-                    startActivity(intent);
+-                    finish();
++                    navigateToMonitoringActivity(userId);
+                 } else {
+                     Toast.makeText(ParentCode.this, "Invalid code", Toast.LENGTH_SHORT).show();
+                 }
+@@ -100,4 +110,10 @@
+             }
+         });
+     }
++    private void navigateToMonitoringActivity(String userId) {
++        Intent intent = new Intent(ParentCode.this, MonitoringActivity.class);
++        intent.putExtra("USER_ID", userId);
++        startActivity(intent);
++        finish();
++    }
+ }
+Index: app/src/main/java/com/whitehats/suraksha/ProfilePage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.whitehats.suraksha;\r\n\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.os.Bundle;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.Toast;\r\n\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\n\r\nimport java.util.UUID;\r\n\r\npublic class ProfilePage extends AppCompatActivity {\r\n    private Button logoutButton;\r\n    private EditText inputOtp1, inputOtp2, inputOtp3, inputOtp4, inputOtp5, inputOtp6;\r\n    private Button regenerateCodeButton;\r\n    private DatabaseReference databaseReference;\r\n    private String generatedCode;\r\n    private String userId;\r\n    private  SharedPreferences sharedPreferences;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_profile_page);\r\n\r\n        inputOtp1 = findViewById(R.id.inputotp1);\r\n        inputOtp2 = findViewById(R.id.inputotp2);\r\n        inputOtp3 = findViewById(R.id.inputotp3);\r\n        inputOtp4 = findViewById(R.id.inputotp4);\r\n        inputOtp5 = findViewById(R.id.inputotp5);\r\n        inputOtp6 = findViewById(R.id.inputotp6);\r\n        regenerateCodeButton = findViewById(R.id.buttongetotp);\r\n\r\n        sharedPreferences = getSharedPreferences(\"user_prefs\", MODE_PRIVATE);\r\n\r\n\r\n        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();\r\n        databaseReference = FirebaseDatabase.getInstance().getReference(\"codes_to_users\");\r\n\r\n        String savedCode = sharedPreferences.getString(\"generated_code\", null);\r\n        if (savedCode != null) {\r\n            generatedCode = savedCode;\r\n            displayCode(generatedCode);\r\n        } else {\r\n            generateAndDisplayCode();\r\n        }\r\n\r\n\r\n        // Regenerate the code on button click\r\n        regenerateCodeButton.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View view) {\r\n                generateAndDisplayCode();\r\n            }\r\n        });\r\n\r\n        logoutButton = findViewById(R.id.buttonlogout);\r\n        logoutButton.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                // Clear the session and log the user out\r\n                SharedPreferences prefs = getSharedPreferences(\"user_prefs\", MODE_PRIVATE);\r\n                SharedPreferences.Editor editor = prefs.edit();\r\n                editor.putBoolean(\"is_logged_in\", false);\r\n                editor.apply();\r\n\r\n                FirebaseAuth.getInstance().signOut();\r\n\r\n                // Go back to login screen\r\n                startActivity(new Intent(ProfilePage.this, LoginActivity.class));\r\n                finish();\r\n            }\r\n        });\r\n    }\r\n\r\n    private void generateAndDisplayCode() {\r\n        generatedCode = generateRandomCode(6);\r\n\r\n        // Display the code in OTP fields\r\n        displayCode(generatedCode);\r\n\r\n        // Save the generated code and userId mapping to Firebase\r\n        saveCodeToFirebaseAndSharedPreferences(generatedCode);\r\n    }\r\n    private void displayCode(String code) {\r\n        if (code.length() == 6) {\r\n            inputOtp1.setText(String.valueOf(code.charAt(0)));\r\n            inputOtp2.setText(String.valueOf(code.charAt(1)));\r\n            inputOtp3.setText(String.valueOf(code.charAt(2)));\r\n            inputOtp4.setText(String.valueOf(code.charAt(3)));\r\n            inputOtp5.setText(String.valueOf(code.charAt(4)));\r\n            inputOtp6.setText(String.valueOf(code.charAt(5)));\r\n        }\r\n    }\r\n    private void saveCodeToFirebaseAndSharedPreferences(String code) {\r\n        // Save the generated code to Firebase\r\n        databaseReference.child(code).setValue(userId).addOnCompleteListener(task -> {\r\n            if (task.isSuccessful()) {\r\n                Toast.makeText(ProfilePage.this, \"Code saved successfully\", Toast.LENGTH_SHORT).show();\r\n\r\n                // Save the generated code to SharedPreferences\r\n                SharedPreferences.Editor editor = sharedPreferences.edit();\r\n                editor.putString(\"generated_code\", code);\r\n                editor.apply();\r\n            } else {\r\n                Toast.makeText(ProfilePage.this, \"Failed to save code\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        });\r\n    }\r\n\r\n    private String generateRandomCode(int length) {\r\n        return UUID.randomUUID().toString().replaceAll(\"-\", \"\").substring(0, length);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/whitehats/suraksha/ProfilePage.java b/app/src/main/java/com/whitehats/suraksha/ProfilePage.java
+--- a/app/src/main/java/com/whitehats/suraksha/ProfilePage.java	(revision 81d8038fe857c00e4ea54fd3df457fd2353536d3)
++++ b/app/src/main/java/com/whitehats/suraksha/ProfilePage.java	(date 1726294077580)
+@@ -40,10 +40,8 @@
+         regenerateCodeButton = findViewById(R.id.buttongetotp);
+ 
+         sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+-
+-
+         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+-        databaseReference = FirebaseDatabase.getInstance().getReference("codes_to_users");
++        databaseReference = FirebaseDatabase.getInstance().getReference();
+ 
+         String savedCode = sharedPreferences.getString("generated_code", null);
+         if (savedCode != null) {
+@@ -66,28 +64,19 @@
+         logoutButton.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+-                // Clear the session and log the user out
+-                SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+-                SharedPreferences.Editor editor = prefs.edit();
+-                editor.putBoolean("is_logged_in", false);
+-                editor.apply();
+-
+-                FirebaseAuth.getInstance().signOut();
+-
+-                // Go back to login screen
+-                startActivity(new Intent(ProfilePage.this, LoginActivity.class));
+-                finish();
++                logout();
+             }
+         });
+     }
+ 
+     private void generateAndDisplayCode() {
++        String oldCode = sharedPreferences.getString("generated_code", null);
++        if (oldCode != null) {
++            databaseReference.child("codes_to_users").child(oldCode).removeValue();
++        }
++
+         generatedCode = generateRandomCode(6);
+-
+-        // Display the code in OTP fields
+         displayCode(generatedCode);
+-
+-        // Save the generated code and userId mapping to Firebase
+         saveCodeToFirebaseAndSharedPreferences(generatedCode);
+     }
+     private void displayCode(String code) {
+@@ -102,11 +91,10 @@
+     }
+     private void saveCodeToFirebaseAndSharedPreferences(String code) {
+         // Save the generated code to Firebase
+-        databaseReference.child(code).setValue(userId).addOnCompleteListener(task -> {
++        databaseReference.child("codes_to_users").child(code).setValue(userId);
++        databaseReference.child("users").child(userId).child("unique_code").setValue(code).addOnCompleteListener(task -> {
+             if (task.isSuccessful()) {
+                 Toast.makeText(ProfilePage.this, "Code saved successfully", Toast.LENGTH_SHORT).show();
+-
+-                // Save the generated code to SharedPreferences
+                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                 editor.putString("generated_code", code);
+                 editor.apply();
+@@ -119,4 +107,18 @@
+     private String generateRandomCode(int length) {
+         return UUID.randomUUID().toString().replaceAll("-", "").substring(0, length);
+     }
++
++    private void logout() {
++        // Clear the session and log the user out
++        SharedPreferences.Editor editor = sharedPreferences.edit();
++        editor.putBoolean("is_logged_in", false);
++        editor.remove("generated_code");
++        editor.apply();
++
++        FirebaseAuth.getInstance().signOut();
++
++        // Go back to login screen
++        startActivity(new Intent(ProfilePage.this, LoginActivity.class));
++        finish();
++    }
+ }

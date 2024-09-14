@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.CountDownTimer;
 import android.telephony.SmsManager;
 import android.widget.Toast;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -79,7 +80,9 @@ public class ScreenOnOffReceiver extends BroadcastReceiver {
 
     // Fetch emergency contacts from Firebase
     private void fetchEmergencyContactsAndSend(Context context) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("emergency_contacts");
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();  // Get the current user's ID
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userId).child("emergency_contacts");
+
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override

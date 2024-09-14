@@ -31,6 +31,13 @@ public class ParentCode extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent_code);
 
+        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        if (prefs.getBoolean("is_logged_in", false)) {
+            // Parent is already logged in, proceed to monitoring activity
+            navigateToMonitoringActivity(prefs.getString("USER_ID", null));
+            return;
+        }
+
         inputOtp1 = findViewById(R.id.inputotp1);
         inputOtp2 = findViewById(R.id.inputotp2);
         inputOtp3 = findViewById(R.id.inputotp3);
@@ -84,11 +91,14 @@ public class ParentCode extends AppCompatActivity {
                 if (userId != null) {
                     // Code is correct, allow parent to log in
                     Toast.makeText(ParentCode.this, "Code verified!", Toast.LENGTH_SHORT).show();
+                    SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean("is_logged_in", true);
+                    editor.putString("USER_ID", userId);
+                    editor.apply();
+
                     // Redirect to parent main screen or monitoring activity
-                    Intent intent = new Intent(ParentCode.this, MonitoringActivity.class);
-                    intent.putExtra("USER_ID", userId);  // Pass the userId to MonitoringActivity
-                    startActivity(intent);
-                    finish();
+                    navigateToMonitoringActivity(userId);
                 } else {
                     Toast.makeText(ParentCode.this, "Invalid code", Toast.LENGTH_SHORT).show();
                 }
@@ -99,5 +109,11 @@ public class ParentCode extends AppCompatActivity {
                 Toast.makeText(ParentCode.this, "Failed to retrieve code", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void navigateToMonitoringActivity(String userId) {
+        Intent intent = new Intent(ParentCode.this, MonitoringActivity.class);
+        intent.putExtra("USER_ID", userId);
+        startActivity(intent);
+        finish();
     }
 }
