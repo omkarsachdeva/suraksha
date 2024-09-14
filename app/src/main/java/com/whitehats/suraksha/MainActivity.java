@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
        incident = findViewById(R.id.incident);
        fake = findViewById(R.id.fake);
        safety = findViewById(R.id.safety);
-       /*hotspot = findViewById(R.id.hotspot);*/
+       hotspot = findViewById(R.id.hotspot);
 
        profile = findViewById(R.id.profile);
        profile.setOnClickListener(new View.OnClickListener() {
@@ -208,13 +208,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        /*hotspot.setOnClickListener(new View.OnClickListener() {
+        hotspot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this , HotspotRegion.class);
                 startActivity(intent);
             }
-        });*/
+        });
 
     }
     private void checkAndRequestPermissions() {

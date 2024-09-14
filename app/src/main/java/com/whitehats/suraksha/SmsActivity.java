@@ -204,10 +204,10 @@ public class SmsActivity extends AppCompatActivity {
     }
 
     private void storeLocationInFirebase(double latitude , double longitude){
-        String alertId = databaseReference.push().getKey();
+        String alertId = FirebaseDatabase.getInstance().getReference("sos_alerts").push().getKey();
         if(alertId!=null){
             SOSData sosData = new SOSData(latitude,longitude);
-            databaseReference.child(alertId).setValue(sosData);
+            FirebaseDatabase.getInstance().getReference("sos_alerts").child(alertId).setValue(sosData);
         }
     }
 
