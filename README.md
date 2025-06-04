@@ -4,7 +4,7 @@ What if technology could recognize a threat before it becomes one?
 This is where Women Safety Analytics steps in — providing proactive threat detection powered by computer vision and real-time analytics.
 
 💡 Our Vision
-To build an intelligent safety monitoring solution that:
+To build an intelligent safety monitoring solution that:!
 
 Protects women by detecting risks in real time
 
@@ -69,3 +69,11 @@ Your feedback, contributions, and ideas are welcome!
 
 ⭐ Star this repo if you believe technology can make a difference.
 📬 Reach out to collaborate or suggest features.
+[WhatsApp Image 2025-01-29 at 21 34 19](https://github.com/user-attachments/assets/4a729d46-99b2-4884-bbe3-1242a958b172)
+![WhatsApp Image 2025-01-29 at 21 34 17](https://github.com/user-attachments/assets/5e907![WhatsApp Image 2024-09-15 at 23 20 42 (1)](https://github.com/user-attachments/assets/b18277e8-6580-4c92-8a01-499e2de98078)
+![WhatsApp Image 2025-01-29 at 21 34 21](https://github.com/user-attachments/assets/857f437b-ac20-4bad-b4db-85fd050a85cf)
+396-43ad-455f-858a-f99e9a1b51c2)
+![WhatsApp Image 2024-09-15 at 23 20 37](https://github.com/user-attachments/assets/c024a791-8741-4a84-a1a7-cb2e31aea5cb)
+![WhatsApp Image 2024-09-15 at 23 20 39](https://github.com/user-attachments/assets/0e33e929-ab69-4c28-8833-c9095ec5b359)
+![WhatsApp Image 2024-09-15 at 23 20 41](https://github.com/user-attachments/assets/fc229fba-9128-47c6-9fb5-6f102990eda2)
+![WhatsApp Image 2024-09-15 at 23 20 42](https://github.com/user-attachments/assets/7725210e-58d9-4403-884b-a49c39f50d22)
