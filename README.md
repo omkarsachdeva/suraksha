@@ -69,8 +69,6 @@ Your feedback, contributions, and ideas are welcome!
 
 ⭐ Star this repo if you believe technology can make a difference.
 📬 Reach out to collaborate or suggest features.
-[WhatsApp Image 2025-01-29 at 21 34 19](https://github.com/user-attachments/assets/4a729d46-99b2-4884-bbe3-1242a958b172)
-![WhatsApp Image 2025-01-29 at 21 34 17](https://github.com/user-attachments/assets/5e907![WhatsApp Image 2024-09-15 at 23 20 42 (1)](https://github.com/user-attachments/assets/b18277e8-6580-4c92-8a01-499e2de98078)
 ![WhatsApp Image 2025-01-29 at 21 34 21](https://github.com/user-attachments/assets/857f437b-ac20-4bad-b4db-85fd050a85cf)
 396-43ad-455f-858a-f99e9a1b51c2)
 ![WhatsApp Image 2024-09-15 at 23 20 37](https://github.com/user-attachments/assets/c024a791-8741-4a84-a1a7-cb2e31aea5cb)
