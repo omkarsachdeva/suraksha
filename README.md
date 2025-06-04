@@ -1,35 +1,71 @@
-Women Safety Analytics – Protecting Women from Safety Threats
-Problem Statement ID: 1605
-Problem Statement Title: Women Safety Analytics – Protecting Women from Safety Threats
+🚨 The Problem
+With rising concerns over women’s safety in urban environments, traditional surveillance just isn't enough.
+What if technology could recognize a threat before it becomes one?
+This is where Women Safety Analytics steps in — providing proactive threat detection powered by computer vision and real-time analytics.
 
-Description
-Background
-The growing concern for the safety of women and the increase in crimes against women in various cities highlight the need for advanced surveillance and analytical solutions to protect women from possible threats. Our approach aims to address these issues through real-time threat detection software.
+💡 Our Vision
+To build an intelligent safety monitoring solution that:
 
-Detailed Description
-Women Safety Analytics leverages advanced analytics and real-time monitoring to create safer environments for women and assist law enforcement in effectively addressing and preventing crimes against women. This proactive approach, which includes detecting anomalies and generating alerts, plays a crucial role in enhancing public safety and fostering a secure atmosphere for women.
+Protects women by detecting risks in real time
 
-The software continuously monitors the scene to count the number of men and women present, offering insights into gender distribution at specific locations and times. It identifies unusual patterns, such as a lone woman at night or unusual gestures, and generates alerts to pre-empt potential incidents.
+Supports law enforcement with data-driven insights
 
-Advantages of the System:
-Real-Time Monitoring: Provides real-time monitoring and alerts to help create a safer environment for women.
-Early Detection: Enables law enforcement to intervene before situations escalate.
-Data-Driven Insights: Continuous analysis provides valuable data to identify hotspots and trends, aiding in strategic planning for city safety.
-Expected Solution
-Women Safety Analytics includes the following functionalities:
+Builds safer communities using predictive analysis and pattern recognition
 
-Person Detection and Gender Classification: Identify people and classify their gender in real-time.
-Gender Distribution Analysis: Count the number of men and women present in the monitored scene.
-Lone Woman Detection at Night: Identify situations where a lone woman is present at night.
-Detection of Women Surrounded by Men: Recognize instances where a woman is surrounded by a group of men.
-SOS Situation Recognition through Gesture Analytics: Detect emergency situations based on specific gestures.
-Hotspot Identification: Identify locations where incidents are more likely to occur, based on past alerts.
+🎯 Key Features
+Feature	Description
+👥 Person & Gender Detection	Detects people in the frame and classifies gender in real time
+📊 Gender Distribution Analysis	Analyzes male-female ratios at specific locations and times
+🌃 Lone Woman Detection at Night	Flags when a woman is detected alone during nighttime
+🧍‍♀️🚶‍♂️🚶‍♂️ Surrounded by Men Alert	Recognizes when a woman is encircled by multiple men
+✋ SOS Gesture Recognition	Detects emergency hand gestures or movements
+📍 Hotspot Identification	Maps areas where safety alerts are frequently triggered
 
+⚙️ How It Works
+Step 1: Real-time video feed input
+Step 2: Object & gender detection using AI/ML models (e.g., YOLOv5 + gender classifier)
+Step 3: Scene analysis for anomaly detection
+Step 4: Alert generation to notify authorities or trigger safety protocols
 
-Team Members:
-1)Omkar Sachdeva
-2)Mradul Kapoor
-3)Sanya Vohra
-4)Manav Singh Shekhawat
-5)Samraddhi Singh
-6)Naman Bhattacharya
+🌐 Real-Life Use Cases
+Public Transport Terminals (stations, subways)
+
+Campus Security in colleges or universities
+
+Street Surveillance in city hotspots
+
+Smart Cities integrating with municipal control centers
+
+🧠 Tech Stack
+Python | OpenCV | YOLOv5
+
+Deep Learning Models (CNN-based gender classifier)
+
+Flask/Django (for web-based interface)
+
+MongoDB (to store alerts and trends)
+
+Heatmaps & Dashboards using Plotly / D3.js
+
+👨‍💻 Team Members
+Name	Role
+Omkar Sachdeva	ML Developer
+Mradul Kapoor	Backend & Analytics
+Sanya Vohra	UI/UX & Frontend
+Manav Singh Shekhawat	Research & Integration
+
+🔮 Future Enhancements
+Mobile App Integration with SOS trigger
+
+Voice-based assistance for emergencies
+
+Integration with city surveillance networks
+
+AI-driven predictive policing reports
+
+🤝 Join Us in Making Cities Safer
+This project goes beyond just code — it’s a step toward creating safer streets and stronger communities.
+Your feedback, contributions, and ideas are welcome!
+
+⭐ Star this repo if you believe technology can make a difference.
+📬 Reach out to collaborate or suggest features.
